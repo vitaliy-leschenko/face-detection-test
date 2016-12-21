@@ -33,7 +33,7 @@ function faceDetectionAsync(content: string): Promise<IFaceDetectionResponse[]> 
             }
         };
 
-        const requests = {
+        xhr.send(JSON.stringify({
             requests: [
                 {
                     image: {
@@ -45,13 +45,11 @@ function faceDetectionAsync(content: string): Promise<IFaceDetectionResponse[]> 
                     }]
                 }
             ]
-        };
-
-        xhr.send(JSON.stringify(requests));
+        }));
     });
 }
 
-async function run() {
+async function run(): Promise<void> {
     const list = document.getElementById("list") as HTMLUListElement;
 
     try {

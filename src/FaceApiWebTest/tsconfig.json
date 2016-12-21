@@ -5,8 +5,9 @@
     "removeComments": false,
     "sourceMap": true,
     "module": "amd",
-    "target": "es6",
-    "outFile": "wwwroot/js/app.js"
+    "target": "es5",
+    "outFile": "wwwroot/js/app.js",
+    "lib": ["es5","es2015.promise","dom"]
   },
   "exclude": [
     "node_modules"

@@ -32,7 +32,7 @@ function faceDetectionAsync(blob: Blob): Promise<IFaceDetectionResponse[]> {
 }
 
 
-async function run() {
+async function run(): Promise<void> {
     const list = document.getElementById("list") as HTMLUListElement;
 
     try {
@@ -42,7 +42,6 @@ async function run() {
         for (let src of sources()) {
             const blob = await loadBlobAsync(src);
             const img = await loadImageAsync(src);
-
             const result = await faceDetectionAsync(blob);
 
             const li = document.createElement("li");
