@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "module": "amd",
+    "target": "es6",
+    "outFile": "wwwroot/js/app.js"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "compileOnSave": true
+}
