@@ -241,4 +241,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-src/FaceApiWebTest/wwwroot/lib/**/*
+src/FaceApiWebTest/wwwroot/lib
