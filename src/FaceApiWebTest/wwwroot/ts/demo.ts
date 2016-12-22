@@ -54,32 +54,38 @@ async function run(): Promise<void> {
 
             list.appendChild(li);
 
-            const gPromise = blobToBase64Async(blob)
-                .then(content => google.faceDetectionAsync(content, api.keys.google))
-                .then(rects => {
+            const googlePromise = (async () => {
+                try {
+                    const content = await blobToBase64Async(blob);
+                    const rects = await google.faceDetectionAsync(content, api.keys.google);
                     drawRects(rects, 'rgba(255, 0, 0, 0.75)', ctx);
                     googleResult.innerText = rects.length > 0 ? "google" : "";
-                }, e => {
+                } catch (e) {
                     googleResult.innerText = "google: error";
-                });
+                }
+            })();
 
-            const aPromise = azure.faceDetectionAsync(blob, api.keys.azure)
-                .then(rects => {
+            const azurePromise = (async () => {
+                try {
+                    const rects = await azure.faceDetectionAsync(blob, api.keys.azure);
                     drawRects(rects, 'rgba(0, 0, 255, 0.75)', ctx);
                     azureResult.innerText = rects.length > 0 ? "azure" : "";
-                }, e => {
+                } catch (e) {
                     azureResult.innerText = "azure: error";
-                });
+                }
+            })();
 
-            const dPromise = detector.faceDetectionAsync(img)
-                .then(rects => {
+            const detectorPromise = (async () => {
+                try {
+                    const rects = await detector.faceDetectionAsync(img);
                     drawRects(rects, 'rgba(0, 0, 0, 0.75)', ctx);
                     detectorResult.innerText = rects.length > 0 ? "detector" : "";
-                }, e => {
+                } catch (e) {
                     detectorResult.innerText = "detector: error";
-                });
+                }
+            })();
 
-            await Promise.all([gPromise, aPromise, dPromise]);
+            await Promise.all([googlePromise, azurePromise, detectorPromise]);
         }
     } catch (e) {
         alert(e);
