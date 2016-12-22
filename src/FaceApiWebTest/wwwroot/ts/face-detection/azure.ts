@@ -22,6 +22,7 @@ export function faceDetectionAsync(blob: Blob, apiKey: string): Promise<R.IRecta
                 reject("error");
             }
         };
+        xhr.onerror = e => reject(e);
 
         xhr.send(blob);
     });

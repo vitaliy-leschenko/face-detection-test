@@ -56,6 +56,7 @@ export function faceDetectionAsync(content: string, apiKey: string): Promise<R.I
                 reject("error");
             }
         };
+        xhr.onerror = e => reject(e);
 
         xhr.send(JSON.stringify({
             requests: [
