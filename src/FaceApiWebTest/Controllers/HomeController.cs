@@ -9,21 +9,6 @@ namespace FaceApiWebTest.Controllers
             return View();
         }
 
-        public IActionResult Azure()
-        {
-            return View();
-        }
-
-        public IActionResult Google()
-        {
-            return View();
-        }
-
-        public IActionResult Amazon()
-        {
-            return View();
-        }
-
         public IActionResult Error()
         {
             return View();

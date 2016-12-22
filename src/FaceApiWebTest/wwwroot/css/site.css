@@ -1,6 +1,6 @@
 ﻿body {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 #list li {
@@ -17,3 +17,11 @@
     #list li img {
         margin:0 0 10px 0;
     }
+
+    #list li p {
+        margin:0;
+    }
+
+        #list li p span {
+            margin:0 8px 0 0;
+        }

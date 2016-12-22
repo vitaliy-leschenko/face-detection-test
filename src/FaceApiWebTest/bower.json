@@ -2,9 +2,7 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "requirejs": "*"
-  },
-  "resolutions": {
-    "jquery": ">=1.8"
+    "requirejs": "*",
+    "promise-polyfill": "*"
   }
 }
