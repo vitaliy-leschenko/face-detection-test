@@ -19,12 +19,19 @@ function drawRects(rects: R.IRectangle[], style: string, ctx: CanvasRenderingCon
     }
 }
 
+function update(a: number, g: number, d: number): void {
+    document.getElementById("azureResults").innerText = a.toString();
+    document.getElementById("googleResults").innerText = g.toString();
+    document.getElementById("detectorResults").innerText = d.toString();
+}
+
 async function run(): Promise<void> {
     const list = document.getElementById("list") as HTMLUListElement;
 
     try {
-        let detected = 0;
-        let total = 0;
+        let azureCount = 0;
+        let googleCount = 0;
+        let detectorCount = 0;
 
         for (let src of sources()) {
             const blob = await loadBlobAsync(src);
@@ -40,9 +47,15 @@ async function run(): Promise<void> {
             const googleResult = document.createElement("span");
             const azureResult = document.createElement("span");
             const detectorResult = document.createElement("span");
+            googleResult.innerText = "google";
             googleResult.style.color = "red";
+            googleResult.style.display = "none";
+            azureResult.innerText = "azure";
             azureResult.style.color = "blue";
+            azureResult.style.display = "none";
+            detectorResult.innerText = "detector";
             detectorResult.style.color = "black";
+            detectorResult.style.display = "none";
 
             const li = document.createElement("li");
             li.appendChild(canvas);
@@ -59,7 +72,11 @@ async function run(): Promise<void> {
                     const content = await blobToBase64Async(blob);
                     const rects = await google.faceDetectionAsync(content, api.keys.google);
                     drawRects(rects, 'rgba(255, 0, 0, 0.75)', ctx);
-                    googleResult.innerText = rects.length > 0 ? "google" : "";
+                    if (rects.length > 0) {
+                        googleResult.style.display = "inline";
+                        googleCount++;
+                        update(azureCount, googleCount, detectorCount);
+                    }
                 } catch (e) {
                     googleResult.innerText = "google: error";
                 }
@@ -69,7 +86,11 @@ async function run(): Promise<void> {
                 try {
                     const rects = await azure.faceDetectionAsync(blob, api.keys.azure);
                     drawRects(rects, 'rgba(0, 0, 255, 0.75)', ctx);
-                    azureResult.innerText = rects.length > 0 ? "azure" : "";
+                    if (rects.length > 0) {
+                        azureResult.style.display = "inline";
+                        azureCount++;
+                        update(azureCount, googleCount, detectorCount);
+                    }
                 } catch (e) {
                     azureResult.innerText = "azure: error";
                 }
@@ -79,7 +100,11 @@ async function run(): Promise<void> {
                 try {
                     const rects = await detector.faceDetectionAsync(img);
                     drawRects(rects, 'rgba(0, 0, 0, 0.75)', ctx);
-                    detectorResult.innerText = rects.length > 0 ? "detector" : "";
+                    if (rects.length > 0) {
+                        detectorResult.style.display = "inline";
+                        detectorCount++;
+                        update(azureCount, googleCount, detectorCount);
+                    }
                 } catch (e) {
                     detectorResult.innerText = "detector: error";
                 }
