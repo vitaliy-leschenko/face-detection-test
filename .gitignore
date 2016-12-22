@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 
 src/FaceApiWebTest/wwwroot/lib
+src/FaceApiWebTest/wwwroot/js/*.*
