@@ -2,10 +2,12 @@
 import loadBlobAsync from "./libs/load-blob";
 import loadImageAsync from "./libs/load-image";
 import blobToBase64Async from "./libs/blob-to-base64";
+import blobToBufferAsync from "./libs/blob-to-buffer";
 
 import * as R from "./face-detection/rect";
 import * as azure from "./face-detection/azure";
 import * as google from "./face-detection/google";
+import * as amazon from "./face-detection/amazon";
 import * as detector from "./face-detection/detector";
 import * as api from "./api-keys";
 
@@ -19,10 +21,11 @@ function drawRects(rects: R.IRectangle[], style: string, ctx: CanvasRenderingCon
     }
 }
 
-function update(a: number, g: number, d: number): void {
-    document.getElementById("azureResults").innerText = a.toString();
-    document.getElementById("googleResults").innerText = g.toString();
-    document.getElementById("detectorResults").innerText = d.toString();
+function update(azure: number, google: number, detector: number, amazon: number): void {
+    document.getElementById("azureResults").innerText = azure.toString();
+    document.getElementById("googleResults").innerText = google.toString();
+    document.getElementById("detectorResults").innerText = detector.toString();
+    document.getElementById("amazonResults").innerText = amazon.toString();
 }
 
 async function run(): Promise<void> {
@@ -30,6 +33,7 @@ async function run(): Promise<void> {
 
     try {
         let azureCount = 0;
+        let amazonCount = 0;
         let googleCount = 0;
         let detectorCount = 0;
 
@@ -46,6 +50,7 @@ async function run(): Promise<void> {
 
             const googleResult = document.createElement("span");
             const azureResult = document.createElement("span");
+            const amazonResult = document.createElement("span");
             const detectorResult = document.createElement("span");
             googleResult.innerText = "google";
             googleResult.style.color = "red";
@@ -53,6 +58,9 @@ async function run(): Promise<void> {
             azureResult.innerText = "azure";
             azureResult.style.color = "blue";
             azureResult.style.display = "none";
+            amazonResult.innerText = "amazon";
+            amazonResult.style.color = "green";
+            amazonResult.style.display = "none";
             detectorResult.innerText = "detector";
             detectorResult.style.color = "black";
             detectorResult.style.display = "none";
@@ -62,6 +70,7 @@ async function run(): Promise<void> {
             const p = document.createElement("p");
             p.appendChild(googleResult);
             p.appendChild(azureResult);
+            p.appendChild(amazonResult);
             p.appendChild(detectorResult);
             li.appendChild(p);
 
@@ -75,9 +84,10 @@ async function run(): Promise<void> {
                     if (rects.length > 0) {
                         googleResult.style.display = "inline";
                         googleCount++;
-                        update(azureCount, googleCount, detectorCount);
+                        update(azureCount, googleCount, detectorCount, amazonCount);
                     }
                 } catch (e) {
+                    googleResult.style.display = "inline";
                     googleResult.innerText = "google: error";
                 }
             })();
@@ -89,12 +99,31 @@ async function run(): Promise<void> {
                     if (rects.length > 0) {
                         azureResult.style.display = "inline";
                         azureCount++;
-                        update(azureCount, googleCount, detectorCount);
+                        update(azureCount, googleCount, detectorCount, amazonCount);
                     }
                 } catch (e) {
+                    azureResult.style.display = "inline";
                     azureResult.innerText = "azure: error";
                 }
             })();
+
+            const amazonPromise = (async () => {
+                try {
+                    const content = await blobToBufferAsync(blob);
+                    const rects = await amazon.faceDetectionAsync(img.width, img.height, content);
+                    drawRects(rects, 'rgba(0, 255, 0, 0.75)', ctx);
+                    if (rects.length > 0) {
+                        amazonResult.style.display = "inline";
+                        amazonCount++;
+                        update(azureCount, googleCount, detectorCount, amazonCount);
+                    }
+                } catch (e) {
+                    amazonResult.style.display = "inline";
+                    amazonResult.innerText = "amazon: error";
+                }
+            })();
+
+            await amazonPromise;
 
             const detectorPromise = (async () => {
                 try {
@@ -103,14 +132,15 @@ async function run(): Promise<void> {
                     if (rects.length > 0) {
                         detectorResult.style.display = "inline";
                         detectorCount++;
-                        update(azureCount, googleCount, detectorCount);
+                        update(azureCount, googleCount, detectorCount, amazonCount);
                     }
                 } catch (e) {
+                    detectorResult.style.display = "inline";
                     detectorResult.innerText = "detector: error";
                 }
             })();
 
-            await Promise.all([googlePromise, azurePromise, detectorPromise]);
+            await Promise.all([googlePromise, azurePromise, amazonPromise, detectorPromise]);
         }
     } catch (e) {
         alert(e);
