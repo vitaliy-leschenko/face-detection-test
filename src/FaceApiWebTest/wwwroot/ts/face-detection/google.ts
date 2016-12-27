@@ -14,8 +14,6 @@ interface IFaceDetectionResponse {
 }
 
 export function faceDetectionAsync(content: string, apiKey: string): Promise<R.IRectangle[]> {
-    //const authKey = "AIzaSyCt42CUKRGguaDQIOwKZaP6s_mWkeYYrQU";
-
     return new Promise<R.IRectangle[]>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "https://vision.googleapis.com/v1/images:annotate?key=" + apiKey, true);
