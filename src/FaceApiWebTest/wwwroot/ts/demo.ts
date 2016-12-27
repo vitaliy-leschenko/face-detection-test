@@ -84,14 +84,14 @@ async function run(): Promise<void> {
 
             list.appendChild(li);
 
-            const wait = async (index: number, span: HTMLSpanElement, results: Results, blob: Blob, action: (Blob) => Promise<R.IRectangle[]>) => {
+            const wait = async (index: number, span: HTMLSpanElement, results: Results, color: string, action: () => Promise<R.IRectangle[]>) => {
                 try {
                     const start = performance.now();
-                    const rects = await action(blob);
+                    const rects = await action();
                     const end = performance.now();
                     results.time += end - start;
 
-                    drawRects(rects, 'rgba(0, 255, 0, 0.75)', ctx);
+                    color && drawRects(rects, color, ctx);
                     if (rects.length > 0) {
                         span.style.display = "inline";
                         results.count++;
@@ -103,22 +103,22 @@ async function run(): Promise<void> {
                 }
             }
 
-            await wait(total, azureResult, azureResults, blob, async (b: Blob) => {
-                return await azure.faceDetectionAsync(b, api.keys.azure);
+            await wait(total, azureResult, azureResults, 'rgba(0, 0, 255, 0.75)', async () => {
+                return await azure.faceDetectionAsync(blob, api.keys.azure);
             });
 
-            await wait(total, googleResult, googleResults, blob, async (b: Blob) => {
-                const content = await blobToBase64Async(b);
+            await wait(total, googleResult, googleResults, 'rgba(255, 0, 0, 0.75)', async () => {
+                const content = await blobToBase64Async(blob);
                 return await google.faceDetectionAsync(content, api.keys.google);
             });
 
-            await wait(total, amazonResult, amazonResults, blob, async (b: Blob) => {
-                const content = await blobToBufferAsync(b);
+            await wait(total, amazonResult, amazonResults, 'rgba(0, 255, 0, 0.75)', async () => {
+                const content = await blobToBufferAsync(blob);
                 return await amazon.faceDetectionAsync(img.width, img.height, content, api.keys.amazon);
             });
 
-            await wait(total, amazonProxyResult, amazonProxyResults, blob, async (b: Blob) => {
-                const content = await blobToBase64Async(b);
+            await wait(total, amazonProxyResult, amazonProxyResults, null, async () => {
+                const content = await blobToBase64Async(blob);
                 return await amazonProxy.faceDetectionAsync(img.width, img.height, content);
             });
         }
