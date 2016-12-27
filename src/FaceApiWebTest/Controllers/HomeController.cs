@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FaceApiWebTest.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         public IConfiguration Configuration { get; }
