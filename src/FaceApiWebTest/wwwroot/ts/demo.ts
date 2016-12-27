@@ -110,7 +110,7 @@ async function run(): Promise<void> {
             const amazonPromise = (async () => {
                 try {
                     const content = await blobToBufferAsync(blob);
-                    const rects = await amazon.faceDetectionAsync(img.width, img.height, content);
+                    const rects = await amazon.faceDetectionAsync(img.width, img.height, content, api.keys.amazon);
                     drawRects(rects, 'rgba(0, 255, 0, 0.75)', ctx);
                     if (rects.length > 0) {
                         amazonResult.style.display = "inline";

@@ -1,13 +1,17 @@
 ﻿import * as R from "./rect";
 
-var rekognition = new AWS.Rekognition({
-    accessKeyId: 'AKIAJ4ANCQQKQ2UMGGLQ',
-    secretAccessKey: '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',
-    region: 'us-west-2'
-});
+interface ISecrets {
+    accessKeyId: string;
+    secretAccessKey: string;
+}
 
-export function faceDetectionAsync(width: number, height: number, content: ArrayBuffer): Promise<R.IRectangle[]> {
+export function faceDetectionAsync(width: number, height: number, content: ArrayBuffer, secrets: ISecrets): Promise<R.IRectangle[]> {
     return new Promise<R.IRectangle[]>((resolve, reject) => {
+        var rekognition = new AWS.Rekognition({
+            accessKeyId: secrets.accessKeyId,
+            secretAccessKey: secrets.secretAccessKey,
+            region: 'us-west-2'
+        });
         const params = {
             Image: {
                 Bytes: content

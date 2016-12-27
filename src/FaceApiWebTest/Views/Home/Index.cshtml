@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FaceApiWebTest.Models.ApiKeyModel
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -15,6 +16,16 @@
 
 @section scripts{
     <script>
-        require(["demo"]);
+        require(["api-keys"], function (module) {
+            var keys = module.keys;
+            keys.azure = '@Model.AzureApiKey';
+            keys.google = '@Model.GoogleApiKey';
+            keys.amazon.accessKeyId = '@Model.AmazonAccessKeyId';
+            keys.amazon.secretAccessKey = '@Model.AmazonSecretAccessKey';
+
+            require(["demo"], function () {
+                console.log("demo loaded.");
+            });
+        });
     </script>
 }

@@ -243,3 +243,4 @@ ModelManifest.xml
 
 /src/FaceApiWebTest/wwwroot/lib
 /src/FaceApiWebTest/wwwroot/js/*.*
+/src/FaceApiWebTest/appsettings.Development.json
