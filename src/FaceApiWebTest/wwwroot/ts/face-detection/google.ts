@@ -64,7 +64,7 @@ export function faceDetectionAsync(content: string, apiKey: string): Promise<R.I
                     },
                     features: [{
                         type: "FACE_DETECTION",
-                        maxResults: 5
+                        maxResults: 10
                     }]
                 }
             ]

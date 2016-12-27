@@ -1,9 +1,9 @@
 ﻿import * as R from "./rect";
 
-export function faceDetectionAsync(width: number, height: number, content: string): Promise<R.IRectangle[]> {
+export function faceDetectionAsync(content: string): Promise<R.IRectangle[]> {
     return new Promise<R.IRectangle[]>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/amazon/face-detect", true);
+        xhr.open("POST", "/api/azure/face-detect", true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.responseType = 'json';
         xhr.onload = e => {
@@ -19,6 +19,6 @@ export function faceDetectionAsync(width: number, height: number, content: strin
             }
         };
         xhr.onerror = e => reject(e);
-        xhr.send(JSON.stringify({ data: content, width: width, height: height }));
+        xhr.send(JSON.stringify({ data: content }));
     });
 }
